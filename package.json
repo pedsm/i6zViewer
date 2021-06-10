@@ -1,0 +1,19 @@
+{
+  "name": "iuclidViewer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "serve public",
+    "build": "webpack",
+    "watch": "webpack -w"
+  },
+  "dependencies": {
+    "@zip.js/zip.js": "^2.3.2",
+    "serve": "^12.0.0",
+    "webpack": "^5.38.1"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.7.2"
+  }
+}
