@@ -29,10 +29,10 @@ async function getContent(entry) {
   )
 }
 
-async function getAsBlob(entry) {
+async function getAsBlob(entry, mime) {
   console.debug(`Reading blob ${entry.filename}`)
   return entry.getData(
-    new zip.BlobWriter()
+    new zip.BlobWriter(mime)
   )
 }
 
@@ -110,7 +110,7 @@ async function dropHandler(e) {
       const xsl = entries.find(file => file.filename == xslName)
       if(xsl == null) {
         const att = parseAttachment(doc)
-        const blob = await getAsBlob(entries.find(file => file.filename == att.content))
+        const blob = await getAsBlob(entries.find(file => file.filename == att.content), att.mimetype)
         const url = window.URL.createObjectURL(blob)
         console.log(`Generated attachment URL for blob at ${url}`)
         docMap.push({
