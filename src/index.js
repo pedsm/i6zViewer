@@ -11,7 +11,7 @@ const linkText = '<link href="#iuclid6_style.css" rel="stylesheet" type="text/cs
 
 function parseAttachment(doc) {
   const att = {}
-  const { children } = doc.activeElement
+  const { children } = doc.activeElement ? doc.activeElement : doc.children[0]
   for(const key of children) {
     if(key.nodeName != 'content') {
       att[key.nodeName] = key.innerHTML
@@ -66,7 +66,7 @@ async function linkDocuments(html, docMap, entries) {
       if(mime.includes('image')) {
         newHtml = newHtml.replaceAll(reference.replace('_', '/'), `<br>
         <div class="imgContainer">
-          <a target="_blank" href=${url}>
+          <a target="_blank" type="${mime}" href=${url}>
             <img src=${url} alt=${label}/>
           </a>
         </div>
@@ -113,7 +113,6 @@ async function dropHandler(e) {
         const blob = await getAsBlob(entries.find(file => file.filename == att.content))
         const url = window.URL.createObjectURL(blob)
         console.log(`Generated attachment URL for blob at ${url}`)
-        x = att
         docMap.push({
           reference: att.documentKey,
           url,
