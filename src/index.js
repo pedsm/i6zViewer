@@ -59,28 +59,29 @@ function getXslName(doc) {
   }
 }
 
-async function linkDocuments(html, documents, entries) {
+async function linkDocuments(html, docMap, entries) {
   let newHtml = html;
-  const docMap = {}
-  for(const doc of documents) {
-    const filename = doc.filename.split('.')[0]
-    docMap[filename] = getXslName(await parseXml(doc))
-  }
   console.log(docMap)
   console.log('Linking documents')
-  for(const [uuid, label] of Object.entries(docMap)) {
-    // if(uuid == null) {
-    //   const att = parseAttachment(doc)
-    //   const blob = await getAsBlob(entries.find(file => file.filename == att.content))
-    //   const url = window.URL.createObjectURL(blob)
-    //   console.log(`Generated attachment URL for blob at ${url}`)
-    //   continue
-    // }
-    newHtml = newHtml.replaceAll(uuid.replace('_', '/'), `<a href="#${uuid}.i6d">${label}</a>`)
-    console.log(`replacing ${uuid.replace('_', '/')}`)
+  for(const {reference, url, label, att, mime} of docMap) {
+    if(att) {
+      if(mime.includes('image')) {
+        newHtml = newHtml.replaceAll(reference.replace('_', '/'), `<br>
+        <div class="imgContainer">
+          <a target="_blank" href=${url}>
+            <img src=${url} alt=${label}/>
+          </a>
+        </div>
+        `)
+      } else {
+        newHtml = newHtml.replaceAll(reference.replace('_', '/'), ` <a target="_blank" href="${url}">${label}</a>`)
+      }
+    } else {
+      newHtml = newHtml.replaceAll(reference.replace('_', '/'), `<a href="${url}">${label}</a>`)
+    }
   }
   return newHtml
-}
+} 
 
 async function dropHandler(e) {
   console.log('Starting reader logic')
@@ -98,12 +99,38 @@ async function dropHandler(e) {
     
     content.innerHTML = await xmlToHtml(await parseXml(manifest), manifestXsl)
 
+    const docMap = []
     const documents = entries.filter(file => file.filename.includes('.i6d'))
     console.log(`Found ${documents.length} documents`)
     for(const rawDoc of documents) {
       const doc = await parseXml(rawDoc)
-      const xsl = entries.find(file => file.filename == getXslName(doc))
-      if(xsl == null) continue // Skip attachment files
+      const xslName = getXslName(doc)
+      const xsl = entries.find(file => file.filename == xslName)
+      if(xsl == null) {
+        const att = parseAttachment(doc)
+        const blob = await getAsBlob(entries.find(file => file.filename == att.content))
+        const url = window.URL.createObjectURL(blob)
+        console.log(`Generated attachment URL for blob at ${url}`)
+        x = att
+        docMap.push({
+          reference: att.documentKey,
+          url,
+          label: att.name,
+          att: true,
+          mime: att.mimetype
+        })
+        continue
+      } else {
+        const filename = rawDoc.filename.split('.')[0]
+        docMap.push({
+          reference: filename,
+          url: `#${filename}.i6d`,
+          label: xslName
+        })
+      } 
+
+
+      console.log(rawDoc)
       // if(xsl == null) {
       //   console.warn(`Skipping ${rawDoc.filename}`)
       //   const att = parseAttachment(doc)
@@ -118,7 +145,7 @@ async function dropHandler(e) {
         ${await xmlToHtml(doc, xsl)}
       </div>`
     }
-    content.innerHTML = await linkDocuments(content.innerHTML, documents, entries)
+    content.innerHTML = await linkDocuments(content.innerHTML, docMap)
     console.timeEnd('Render')
   }
 }
