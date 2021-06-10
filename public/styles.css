@@ -13,17 +13,54 @@
 
 body {
   background-color: var(--bg);
+  outline-offset: 0px;
+  transition-duration: 0.1s;
+  margin: 0;
+  padding: 12px;
+  min-height: 100vh;
+}
+
+.hover {
+  outline-offset: -30px;
+  outline: 30px solid var(--text);
+}
+
+#notification {
+  background-color: var(--link);
+  color: var(--bg);
+  padding: 20px;
+  position: fixed;
+  width: 70vw;
+  left: 15vw;
+  border-radius: 10px;
+  box-shadow: 0px 5px 20px gray;
+  transition-duration: 0.2s;
+  top: 10px;
+}
+
+.closed {
+  top: -200px !important;
+}
+
+
+#center {
+  width: 100%;
+  padding-top: 40vh;
+  text-align: center;
+}
+#center p {
+  font-weight: bold;
+  font-size: 2em;
 }
 
 a {
   color: var(--link)
 }
- a:hover {
-   color: var(--link-hover)
- }
+a:hover {
+  color: var(--link-hover)
+}
 
 #content {
-  min-height: 100vh;
   background-color: var(--bg);
   width: 100%;
   max-width: 1000px;
