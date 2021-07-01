@@ -1,11 +1,17 @@
 # i6zViewer
 
-i6z viewer is a web app designed to display the content of [Iuclid 6 files](https://iuclid6.echa.europa.eu/format).
+![Icon](.github/icon.png)
+
+
+i6z viewer (or iuclid viewer) is a web app designed to display the content of [Iuclid 6 files](https://iuclid6.echa.europa.eu/format).
 
 ## How it works
 
 Simply visit the webpage [here](https://i6z-viewer.vercel.app/) and drag and drop an `.i6z` file on your browser window. 
-This will generate a web view with a representation of all contents in the file.
+This will generate a web view with a representation of all contents in the file. And should look something like so:
+
+![Iuclid viewer](.github/i6zGif.gif)
+
 
 ## Why was this built?
 
@@ -23,3 +29,8 @@ on being fast and easy to use.
 - Fast. Dossiers with 300+ documents load almost instantly with linking (generation of hyperlinks in between documents, and attachments) happening in the background
 - Ability to download attachments directly from the web page
 - Rendering of image attachments
+
+
+### Need a i6z file to try it with?
+
+You can find some example iuclid files in [Echa's Training material page](https://iuclid6.echa.europa.eu/training-material)
